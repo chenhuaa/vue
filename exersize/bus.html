@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+  <div id="container">
+    <component1></component1>
+    <component2></component2>
+  </div>
+  <script>
+    // todo: 出现问题 $on 无法使用
+    Vue.component('component2',{
+      template: `<h3>{{accept}}</h3>`,
+      data: function(){
+        return {
+          accept: ''
+        }
+      },
+      created(){
+        bus.$on('receive',function(param){
+          this.accept = param;
+        })
+      }
+    })
+    Vue.component('component1',{
+      template: `<div>
+                  <input type="text" v-model="info">
+                  <button @click="sendMsg">发送消息</button>
+                 </div>`,
+      data: function(){
+        return {
+          info: 'lalalalala'
+        }
+      },
+      methods: {
+        sendMsg: function(){
+          bus.$emit('receive',this.info);
+        }
+      }
+    })
+    
+    var bus = new Vue({
+      el: "#container"
+    })
+  </script>
+</body>
+</html>

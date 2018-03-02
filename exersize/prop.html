@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="container">
+    <!-- 注意：此处要写成prop-a，而不能写成propA，因为HTML不区分大小写，propA默认为propa，故找不到对应对象 -->
+    <example :prop-a="propa" :prop-b="propb" :prop-c="propc" :prop-d="propd" :prop-e="prope" :prop-f="propf"></example>
+    <h4>{{propa}}-{{propb}}-{{propc}}-{{propd}}-{{prope}}-{{propf}}</h4>
+  </div>
+  <script>
+    Vue.component('example', {
+      template: `<h4>{{propA}}-{{propB}}-{{propC}}-{{propD}}-{{propE}}-{{propF}}</h4>`,
+      props: {
+        // 基础类型检测 (`null` 指允许任何类型)
+        propA: Number,
+        // 可能是多种类型
+        propB: [String, Number],
+        // 必传且是字符串
+        propC: {
+          type: String,
+          required: true
+        },
+        // 数值且有默认值
+        propD: {
+          type: Number,
+          default: 100
+        },
+        // 数组/对象的默认值应当由一个工厂函数返回
+        propE: {
+          type: Object,
+          default: function () {
+            return { message: 'hello' }
+          }
+        },
+        // 自定义验证函数
+        propF: {
+          validator: function (value) {
+            return value > 10
+          }
+        }
+      }
+    })
+    new Vue({
+      el: '#container',
+      data: {
+        propa: 2,
+        propb: 'string',
+        propc: 'string(true)',
+        propd: 70,
+        prope: {text: "hello"},
+        propf: 35
+      }
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+<div id="container">
+  <div>
+    <input v-model="messageText" placeholder="edit me">
+    <p>输入为：{{ messageText }}</p>
+  </div>
+  <hr>
+  <div>
+    <span>输入为：</span>
+    <p style="white-space: pre-line;">{{ messageTextarea }}</p>
+    <br>
+    <textarea v-model="messageTextarea" placeholder="add multiple lines"></textarea>
+  </div>
+  <hr>
+  <div>
+    <input type="checkbox" v-model="checked" id="checked">
+    <label for="checked">{{checked}}</label>
+  </div>
+  <hr>
+  <div>
+    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+    <label for="jack">Jack</label>
+    <input type="checkbox" id="john" value="John" v-model="checkedNames">
+    <label for="john">John</label>
+    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+    <label for="mike">Mike</label>
+    <br>
+    <span>选择为：{{ checkedNames }}</span>
+  </div>
+  <hr>
+  <div>
+    <input type="radio" id="one" value="One" v-model="picked">
+    <label for="one">One</label>
+    <br>
+    <input type="radio" id="two" value="Two" v-model="picked">
+    <label for="two">Two</label>
+    <br>
+    <span>Picked: {{ picked }}</span>
+  </div>
+  <hr>
+  <div>
+    <select v-model="selected" multiple style="width: 50px;">
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+    </select>
+    <br>
+    <span>Selected: {{ selected }}</span>
+  </div>
+</div>
+  <script>
+    new Vue({
+      el: '#container',
+      data: {
+        messageText: '',
+        messageTextarea: '',
+        checked: false,
+        checkedNames: [],
+        picked: '',
+        selected: []
+      }
+    })
+  </script>
+</body>
+</html>

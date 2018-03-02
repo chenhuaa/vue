@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+  <div id="container">
+    <my-awesome-list :items="items">
+      <!-- 作用域插槽也可以是具名的 -->
+      <li
+              slot="item"
+              slot-scope="props"
+              class="my-fancy-item">
+        {{ props.text }}
+      </li>
+    </my-awesome-list>
+  </div>
+  <hr>
+  <script>
+    Vue.component('my-awesome-list',{
+      template: `<ul>
+                  <slot name="item" v-for="item in items" :text="item.text">
+                    没有插入的东西
+                  </slot>
+                 </ul>`,
+      props: ['items']
+    });
+    new Vue({
+      el: '#container',
+      data: {
+        items: [
+          { text: 'john'},
+          { text: 'mary'},
+          { text: 'jerry'}
+        ]
+      }
+    })
+  </script>
+  <div id="box">
+    <child>
+      <span slot-scope="{ text }">{{ text }}</span>
+    </child>
+  </div>
+  <script>
+    Vue.component('child',{
+      template: `<div class="child">
+                    <slot text="hello from child"></slot>
+                  </div>`
+    });
+    new Vue({
+      el: '#box'
+    })
+  </script>
+</body>
+</html>

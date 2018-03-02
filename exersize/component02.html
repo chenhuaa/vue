@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+<div id="container">
+  <currency-input v-model="price"></currency-input>
+  <!-- 上面的v-model实际上是一个语法糖，它的实际意义如下 -->
+  <!-- <currency-input v-bind:value="price" v-on:input="price=arguments[0]"></currency-input> -->
+  <h4>{{price}}</h4>
+</div>
+<script>
+  Vue.component('currency-input', {
+    template: `
+    <span>
+      $
+      <input
+        ref="input"
+        v-bind:value="value"
+        v-on:input="updateValue($event.target.value)"
+      >
+      <h5>{{value}}</h5>
+    </span>`,
+    props: ['value'],
+    data: function(){
+      return {
+        value: this.value
+      }
+    },
+    methods: {
+      // 不是直接更新值，而是使用此方法来对输入值进行格式化和位数限制
+      updateValue: function (value) {
+        console.log(value);
+        var formattedValue = value
+        // 删除两侧的空格符
+          .trim()
+          // 保留 2 位小数
+          .slice(
+            0,
+            value.indexOf('.') === -1
+              ? value.length
+              : value.indexOf('.') + 3
+          )
+        // 如果值尚不合规，则手动覆盖为合规的值
+        if (formattedValue !== value) {
+          this.$refs.input.value = formattedValue
+        }
+        console.log('updateValue');
+        console.log(this);
+        // 通过 input 事件带出数值（此处触发的是currency-input上的input）
+        this.$emit('input', Number(formattedValue))
+      }
+    }
+  })
+  new Vue({
+    el: '#container',
+    data: {
+      price: ''
+    }
+  });
+  // 对于以上例子的理解：
+  /* 它这里的input是父实例on的input，看到下面代码的props里的value和最后那句this.$emit('input', Number(formattedValue))了吗？子组件触发了外层设置的对input这个自定义事件的监听（input完全可以改成其它乱七八糟的名字都无所谓，因为这个和原生的那个事件一毛钱关系都没有）外层在input被触发时，执行了something = arguments[0]，也就是something获取到了Number(formattedValue)这个值，又v-bind:value="something"，通过这句还有下面的props，把这个值传给子组件的value，然后子组件里不是有一句v-bind:value="value"吗，所以就把这个value值设置上去了。 */
+</script>
+</body>
+</html>
