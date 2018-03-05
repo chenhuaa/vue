@@ -411,7 +411,11 @@
 
 #### 3.2
 
-1. 路由
+1. 组件间的通信
+
+   ​
+
+2. 路由
 
    1. 路由导航（默认被渲染成一个<a>标签）：
 
@@ -459,7 +463,7 @@
 
       this.$router.push(url);
 
-2. 路由嵌套
+3. 路由嵌套
 
    const  router  =  new VueRouter({
      routes: [
@@ -482,7 +486,7 @@
 
    + 注意，以 / 开头的嵌套路径会被当作根路径。
 
-3. 重定向 和 别名
+4. 重定向 和 别名
 
    1. 重定向
 
@@ -502,12 +506,26 @@
 
       + 即‘/detail’的别名为‘/list’， 当访问 ‘/list’ 时，url会保持为 ‘/list’，但路由匹配为'/detail'，即访问的实际上是 ‘/detail’
 
-4. 过渡&动画
+#### 3.5
 
-   1. ​
+1. 过渡&动画
 
+   1. 列表过渡
 
+      1. 单元素/组件的过渡
 
+         + <transition  name="fade"><transition>
+
+         + class切换
+
+           1. fade-enter : 定义进入过渡的开始状态。在元素被插入时生效，在下一个帧移除。
+           2. fade-enter-active : 定义过渡的状态。在元素整个过渡过程中作用，在元素被插入时生效，在transition/animate完成之后移除。这个类可以被用来定义过渡的过程时间，延迟和曲线函数。
+           3. fade-enter-to : 定义进入过渡的结束状态。在元素被插入一帧后生效（与此同时 fade-enter 被删除），在 transition/animate 完成之后移除。
+           4. fade-leave : 定义离开过渡的开始状态。在离开过渡被触发时生效，在下一个帧移除。
+           5. fade-leave-active : 定义过渡的状态。在元素整个过渡过程中作用，在离开过渡被触发后立即生效，在 transition/animate 完成之后移除。这个类可以被用来定义过渡的过程时间，延迟和曲线函数。
+           6. fade-leave-to : 定义离开过渡的结束状态。在离开过渡被触发一帧后生效（与此同时 fade-leave 被删除），在 transition/animate 完成之后移除。
+
+           ​
 
 
 
