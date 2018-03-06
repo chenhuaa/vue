@@ -58,7 +58,7 @@
 
 1. Vue实例
 
-   new
+   new  Vue({ })
 
 2. 模板语法
 
@@ -371,10 +371,67 @@
 
 4. 自定义事件
 
-   1. d
-   2. d
-   3. dd
-   4. s
+   1. 使用 `v-on` 绑定自定义事件
+
+      + 每个 Vue 实例都实现了 事件接口，即：
+        + $on( eventName ) 监听事件
+        + $emit( eventName ) 触发时间
+        + 注意：`$on`  和 `$emit` 并不是 addEventListener 和 dispatchEvent 的别名。
+      + 父组件可以在使用子组件的地方直接用 `v-on` 来监听子组件触发的事件。
+
+   2. 给组件绑定原生事件
+
+      + .native
+
+        <my-component  v-on:click.native="doTheThing"></my-component>
+
+   3. 使用自定义事件的表单输入组件
+
+      + 表单输入组件的数据双向绑定：
+
+        <input  v-model="something">
+
+        以上是以下写法的语法糖，
+
+        <input  v-bind:value="something"  v-on:input="something = $event.target.value">
+
+        在组件中使用时，相当于：
+
+        <input  v-bind:value="something"  v-on:input="something = arguments[0]">
+
+        故 要让组件的 `v-model` 生效，他应该接受一个 value prop 和 在有新的值时触发 input 事件并将新值作为参数。
+
+   4. 自定义组件的 `v-model`
+
+      + 默认情况下，一个组件的 `v-model` 会使用 value prop 和 input 事件。但是诸如单选框、复选框之类的输入类型可能会把 value 用做了别的目的。model 选项可以避免这样的冲突：
+
+        Vue.component( 'my-checkbox' , {
+
+        ​	model : {
+
+        ​		prop : 'checked',
+
+        ​		event : 'change'
+
+        ​	},
+
+        ​	props : {
+
+        ​		checked : Boolean,       // 任然需要显式的声明
+
+        ​		value : String          // 这样就拿到value这个prop了
+
+        ​	}
+
+        })
+
+        绑定：
+
+        <my-checkbox  v-model="foo"  value="some value"></my-checkbox>
+
+        上述代码等价于：
+
+        <my-checkbox  :checked="foo"  @change="val => { foo = val }"  value="some value"></my-checkbox>	
 
 5. 使用插槽分发内容
 
@@ -412,6 +469,8 @@
 #### 3.2
 
 1. 组件间的通信
+
+   1. ​
 
    ​
 
@@ -525,8 +584,349 @@
            5. fade-leave-active : 定义过渡的状态。在元素整个过渡过程中作用，在离开过渡被触发后立即生效，在 transition/animate 完成之后移除。这个类可以被用来定义过渡的过程时间，延迟和曲线函数。
            6. fade-leave-to : 定义离开过渡的结束状态。在离开过渡被触发一帧后生效（与此同时 fade-leave 被删除），在 transition/animate 完成之后移除。
 
-           ​
+         + 自定义过渡类名
+
+           1. enter-class
+
+           2. enter-active-class
+
+           3. enter-to-class
+
+           4. leave-class
+
+           5. leave-active-class
+
+           6. leave-to-class
+
+              他们的优先级高于普通类名。
+
+         + 同时使用过渡和动画
+
+         + 显性的过渡持续时间
+
+         + JavaScript钩子
+
+           + <transition
+               v-on:before-enter="beforeEnter"
+               v-on:enter="enter"
+               v-on:after-enter="afterEnter"
+               v-on:enter-cancelled="enterCancelled"
+
+               v-on:before-leave="beforeLeave"
+               v-on:leave="leave"
+               v-on:after-leave="afterLeave"
+               v-on:leave-cancelled="leaveCancelled" >
+
+             </transition>
+
+           + methods : {
+
+             ​	beforeEnter : function( el ){ },
+
+             ​	enter : function( el, done ){ done() },
+
+             ​	afterEnter : function( el ){ },
+
+             ​	enterCancelled : function( el ){ },
+
+             ​	beforeLeave : function( el ){ },
+
+             ​	leave : function( el, done ){ },
+
+             ​	afterLeave : function( el ){ },
+
+             ​	leaveCancelled : function( el ){ }	// leaveCancelled只能用于 v-show 中
+
+             }	
+
+             注意： 在 enter 和leave 中，回调函数 done 是必须的。否则，他们会被同步调用，过渡会立即完成。
+
+             推荐：仅使用 JavaScript 过渡的元素添加 `v-bind:css="false"`，Vue 会跳过 CSS 的检测。这也可以避免过渡过程中 CSS 的影响。
+
+      2. 初始渲染的过渡
+
+         + 通过 appear 特性设置节点在初始渲染的过渡。
+
+           <transition  appear></transition>
+
+         + 自定义类名
+
+           + appear-class
+           + appear-to-class
+           + appear-active-class
+
+         + JavaScript钩子
+
+           + <transition
+
+             ​	appear
+
+             ​	v-on:before-appear="xxx"
+
+             ​	v-on:appear="xxx"
+
+             ​	v-on:after-appear="xxx"
+
+             ​	v-on:appear-cancelled="xxx" >
+
+             </transition>
+
+      3. 多个元素的过渡
+
+         + 原生标签可以使用 `v-if`/`v-else` 。
+
+           + 当有相同标签名的元素切换时，需要通过 key 特性设置唯一的值来标记以让Vue区分它们，否则Vue为了效率只会替换相同的标签内部的内容。即使在技术上没有必要，给在 <transition> 组件中的多个元素设置 key 是一个更好的实践！
+
+           + 有时，可以通过给一个元素的 key 特性设置不同的状态来代替 `v-if` 和 `v-else` 
+
+             + <transition>
+
+               ​	<button v-bind:key="isEdit">
+
+               ​		{{ isEdit ? 'Save' : 'Edit' }}
+
+               ​	</button>
+
+               </transition>
+
+             + <transition>
+
+               ​	<button v-bind:key="docState">
+
+               ​		{{ btnMessage }}
+
+               ​	</button>
+
+               </transition>
+
+               // ....
+
+               computed : {
+
+               ​	btnMessage : function( ){
+
+               ​		switch ( this.docState ) {
+
+               ​			case  'aaa' : return  'AAA',
+
+               ​			case  'bbb' : return  BBB',
+
+               ​			case  'ccc' : return  'CCC'
+
+               ​		}
+
+               ​	}
+
+               }
+
+         + 过渡模式
+
+           + <transition>的默认行为：进入和离开同时发生。
+           + Vue提供了 过渡模式
+             + in-out：新元素先进行过渡，完成后当前元素过渡离开
+             + out-in：当前元素先进行过渡，完成后新元素过渡进入
+
+      4. 多个组件的过渡
+
+         + 不需要使用 key 特性，只需要使用 动态组件
+
+      5. 列表过渡
+
+         + <transition-group> 组件
+           + 他会以一个真实的元素呈现：默认为一个 <span> （可以通过 tag 特性更换为其他元素）。
+           + 内部元素总是需要提供唯一的 key 属性值
+         + 列表的进入/离开过渡
+         + 列表的排序过度
+           + 新增 `v-move` 特性，在元素改变定位的过程中应用。（同样：通过 name 属性来自定义前缀，也可以通过 move-class 属性手动设置。）`v-move` 对于设置过渡的切换时机和过渡曲线非常有用。
+           + Vue的内部实现是使用了 FLIP 简单的动画队列使用transforms 将元素从之前的位置平滑过渡新的位置。
+           + 注意： 使用FLIP过渡的元素不能设置为 display : inline。作为代替方案，可以设置 display : inline-block 或者放置于 flex 中。
+
+      6. 可复用的过渡
+
+         + 过渡可以通过Vue的组件系统实现复用。要创建一个可复用过渡组件，只要将 <transition> 或者 <transition-group> 作为根组件，再将子组件放置在其中即可。
+
+      7. 动态过渡
+
+   2. 状态过渡
+
+      1. 状态动画 与 侦听器
+      2. 动态状态过度
+      3. 把过渡放到组件里
+      4. 图片动画
+         + SVG的本质是数据
+
+#### 3.6
+
+1. 混入
+
+   1. 概念
+      + 混入 是一种分发 Vue 组件中可复用功能的非常灵活的方式。混入对象可以包含任意组件选项。当组件使用混入对象时，所有混入对象的选项将被混入该组件本身的选项。
+   2. 选项合并
+      + 当组件和混入对象含同名选项时，这些选项回合并
+        + 数据对象在内部会进行浅合并（一层属性深度），在组件的数据发生冲突时以组件数据优先。
+        + 同名的钩子函数将混合为一个数组，因此都将被调用。另外，混入对象的钩子将在组件自身钩子 之前 调用。
+        + 值为对象的选项，如：methods，components和directive，将被混合成同一个对象。两个对象键名冲突时，以组建对象的键值对优先。
+        + 注意：Vue.extend() 也使用同样的策略进行合并。
+   3. 全局混入
+      + 也可以全局注册混入对象。但是一旦使用全局混入对象，将会影响到所有之后创建的 Vue 实例。使用恰当时，可以为自定义对象注入处理逻辑。
+      + 谨慎使用全局混入对象，因为会影响到每个单独创建的 Vue 实例 (包括第三方模板)。大多数情况下，只应当应用于自定义选项。也可以将其用作 Plugins 以避免产生重复应用。
+   4. 自定义选项合并策略
+      + 自定义选项将使用默认策略，即简单地覆盖已有值。
+      + 自定义逻辑合并......
+
+2. 自定义指令
+
+   1. 简介
+
+      - Vue允许自定义指令
+
+        - 注册全局自定义指令 
+
+          Vue.directive( 'focus' , { 
+
+          ​	inserted : function ( el ) {
+
+          ​		el.focus();
+
+          ​	}
+
+          })
+
+        - 注册局部自定义指令
+
+          directive : {
+
+          ​	focus : {
+
+          ​		inserted : function ( el ) {
+
+          ​			el.focus();
+
+          ​		}
+
+          ​	}
+
+          }
+
+        - 使用自定义指令
+
+          <input  v-focus>
+
+   2. 钩子函数
+
+      1. bind : 只调用一次，指令第一次绑定到元素时调用。即初始化设置。
+      2. inserted : 被绑定元素插入父节点时调用（仅保证父节点存在，但不一定已被插入文档中）。
+      3. update : 所在组件的 VNode 更时调用，但是可能发生在其子 VNode 更新之前。指令的值可能发生了改变，也可能没有。
+      4. componentUpdated : 指令所在组件的 VNode 及其子 VNode 全部更新后调用。
+      5. unbind : 只调用一次，指令与元素解绑时调用。
+
+   3. 钩子函数参数
+
+      1. el : 指令所绑定的元素，可以用来直接操作 DOM。
+      2. binding : 一个对象，包含以下的属性：
+         1. name : 指令名，不包含 v- 前缀。
+         2. value : 指令的绑定值，例如在 v-my-directive="1+1"中，绑定值为2。
+         3. oldValue : 指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用（无论值是否改变都可用）。
+         4. expression : 字符串形式的指令表达式，例如在 v-my-directive="1 + 1" 中，表达式为"1 + 1"。
+         5. arg : 传给指令的参数，可选。例如在 v-my-directive:foo 中，参数为 "foo"。
+         6. modifiers : 一个包含修饰符的对象。例如在 v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。
+      3. vnode : Vue 编译生成的虚拟节点。
+      4. oldVnode : 上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
+
+      + 注意：除 el 之外，其他参数都应该是只读的，切勿进行修改。若需要在钩子函数之间共享数据，建议通过元素的 dataset 来进行。
+
+   4. 函数简写
+
+      + 有时，若想要在 bind 和 update 时触发相同的行为，而不关心其他的钩子，可以简写为：
+
+        Vue.directive( 'color-swatch' , function ( el , binding ) {
+
+        ​	el.style.backgroundColor = binding.value
+
+        })
+
+   5. 对象字面量
+
+      + 若果指令需要多个值，可以传入一个 JavaScript 对象字面量（指令函数能够接受所有合法的 JavaScript 表达式）。
+
+        <div v-demo="{ color: 'white', text: 'hello' }"></div>
+
+        Vue.directive( '' , function ( el, binding ) {
+
+        ​	console.log( binding.value.color );
+
+        });
+
+3. 渲染函数&JSX 
+
+4. ​
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tween.js       一款可生成平滑动画效果的js动画库
+
+Color.js
+
+Lodash.js
+
+velocity.js
