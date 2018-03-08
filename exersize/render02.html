@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>render02</title>
+        <script src="js/vue.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <anchored-heading :level="1">hello world</anchored-heading>
+            <anchored-heading :level="1">
+                <span>vue</span>
+                <span>angular</span>
+                <span>react</span>
+            </anchored-heading>
+        </div>
+        <script>
+            var getChildrenTextContent = function (children) {
+                return children.map(function (node) {
+                    return node.children ? getChildrenTextContent(node.children) : node.text
+                }).join('')
+            }
+
+            Vue.component('anchored-heading', {
+                render: function (createElement) {
+                    // create kebabCase id
+                    var headingId = getChildrenTextContent(this.$slots.default)
+                    .toLowerCase()
+                    .replace(/\W+/g, '-')   // 匹配除字母数字下划线的内容，置换为“-”
+                    .replace(/(^\-|\-$)/g, '')   // 除取首尾的“-”（置换为“”）
+
+                    return createElement(
+                        'h' + this.level,
+                        [
+                            createElement('a', {
+                                attrs: {
+                                    name: headingId,
+                                    href: '#' + headingId
+                                }
+                            }, this.$slots.default)
+                        ]
+                    )
+                },
+                props: {
+                    level: {
+                        type: Number,
+                        required: true
+                    }
+                }
+            });
+            new Vue({
+                el: '#container'
+            });
+        </script>
+    </body>
+</html>

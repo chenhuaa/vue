@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>render</title>
+        <script src="js/vue.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            
+        </div>
+        <script>
+            Vue.component('my-component',{
+                render: function(createElement){
+                    return createElement('h'+this.level, this.$slots.default)
+                },
+                props: {
+                    level: {
+                        type: Number,
+                        required: true
+                    }
+                }
+            });
+            new Vue({
+                el: '#container',
+                template: `<div><my-component :level="1">hello world</my-component></div>`,
+                create: function(){
+                    console.log(this.$slots);
+                }
+            });
+        </script>
+    </body>
+</html> 

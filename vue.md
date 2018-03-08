@@ -859,7 +859,226 @@
 
 3. 渲染函数&JSX 
 
-4. ​
+   1. 基础
+
+      + Vue 推荐在绝大多数情况下使用 template 来创建 HTML模板。然而在一些场景中，需要 JavaScript 的完全编程的能力，这就是 **render 函数**，它比 template 更接近编译器。
+
+      + Vue.component( 'my-component' , {
+
+        ​	render : function (createElement) {
+
+        ​		return  createELement( 'h'+this.level, this.$slots.default )
+
+        ​	},
+
+        ​	props: {
+
+        ​		level: {
+
+        ​			type : Number,
+
+        ​			required : true
+
+        ​		}
+
+        ​	}
+
+        });
+
+   2. 节点、树、虚拟DOM
+
+      + 在"DOM节点"树中，每个元素都是一个节点。
+      + 虚拟DOM：Vue通过建立一个虚拟DOM，对真实DOM发生的变化保持追踪。
+
+   3. creatElement 参数
+
+      1. 必需，{ String | Object | Function }，一个 HTML 标签字符串，组件选项对象，或者一个返回值类型为 String/Object 的函数。
+      2. 可选，{ Object }，一个包含模板相关属性的 **数据对象**，可以在template中使用这些属性。
+      3. 可选，{ String | Array }，子节点（VNodes），由 'createElement() ' 构建而成，或使用字符串来生成"文本节点"。
+         + 注意： 返回值为"虚拟节点"，即"VNode"
+
+   4. 数据对象（data）
+
+      + 即createElement的第二个参数，在该VNode数据对象中，下列属性名是级别最高的字段，该对象也允许你绑定普通的HTML特性，就像DOM属性一样。
+
+        {
+
+        ​	// 和 `v-bind:class` 一样的 API
+
+        ​	'class' : {
+
+        ​		foo : true,
+
+        ​		bar : false
+
+        ​	},
+
+        ​	// 和 `v-bind:style` 一样的 API
+
+        ​	style : {
+
+        ​		color : 'red',
+
+        ​		fontSize : '14px'
+
+        ​	},
+
+        ​	// 正常的 HTML 特性
+
+        ​	attrs : {
+
+        ​		id : 'foo'
+
+        ​	},
+
+        ​	// 组件 props
+
+        ​	props : {
+
+        ​		myProp : 'bar'
+
+        ​	},
+
+        ​	// DOM 属性
+
+        ​	domProps : {    
+
+        ​		innerHTML: 'baz' 
+
+        ​	},
+
+        ​	// 事件监听器基于 on
+
+        ​	// 所以不再支持如 `v-on:keyup.enter` 修饰器，需要手动匹配 keyCode。
+
+        ​	on : {
+
+        ​		click : this.clickHandler
+
+        ​	},
+
+        ​	// 仅对于组件，用于监听原生事件，而不是组件内部使用 `vm.$emit` 触发的事件。
+
+        ​	nativeOn : {
+
+        ​		click : this.nativeClickHandler
+
+        ​	},
+
+        ​	//  自定义指令。
+
+        ​	// 注意：无法对 `binding` 中的 `oldValue`  赋值，因为 Vue 已经自动进行了同步。
+
+        ​	directives : [
+
+        ​		{
+
+        ​			name : 'my-custom-directive',
+
+        ​			value : '2',
+
+        ​			expression : '1+1',
+
+        ​			arg : 'foo',
+
+        ​			modifiers : {
+
+        ​				bar : true
+
+        ​			}
+
+        ​		}
+
+        ​	],
+
+        ​	// Scoped slots in the form of  { name: props => VNode | Array<VNode> }
+
+        ​	scopedSlots : {
+
+        ​		default : props => createElement( 'span' , props.text )
+
+        ​	},
+
+        ​	// 如果组件是其他组件的子组件，需为插槽指定名称
+
+        ​	slot : 'name-of-slot',
+
+        ​	// 其他特殊顶层属性
+
+        ​	key : 'myKey',  
+
+        ​	ref : 'myRef'
+
+        }
+
+      + 注意：VNode必须唯一，若想要重复多次的元素或组件，可以使用工厂函数来实现。
+
+        render : function ( createElement ) {
+
+        ​	return  createElement( 'div', 
+
+        ​		Array.apply( null, { length : 20 } ).map( function () {
+
+        ​			return  createElement( 'p', 'hello' )
+
+        ​		})
+
+        ​	)
+
+        }
+
+   5. 使用JavaScript代替模板功能
+
+      1. `v-if` 和 `v-for` 会在render函数中被JavaScript的 if/else/map重写。
+
+      2. 在render函数中没有与 `v-model` 相应的API，故需要写原生逻辑。
+
+      3. 事件修饰符
+
+         | Modifier(s)——修饰符                | Prefix——替换前缀 |
+         | :------------------------------ | :----------- |
+         | .passive                        | &            |
+         | .capture                        | !            |
+         | .once                           | ~            |
+         | .capture.once  或  .once.capture | ~!           |
+
+         其他的修饰符，前缀不是很重要，因为你可以在事件处理函数中使用事件方法：
+
+         | Modifier(s)——修饰符                         | Equivalent in Handler                    |
+         | ---------------------------------------- | ---------------------------------------- |
+         | .stop                                    | event.stopPropagation()                  |
+         | .prevent                                 | event.preventDefault()                   |
+         | .self                                    | if (event.target !== event.currentTarget)  return |
+         | Keys：  .enter   .13                      | if (event.keyCode !== 13)  return  (change  13  to  another key code  for other key modifiers) |
+         | Modifiers Keys：  .ctrl    .alt    .shift    .meta | if( !event.ctrlKey )  return  (change  ctrlKey  to  altKey,shiftKey,or metaKey,respectively) |
+
+         如：
+
+         ​	on : {
+
+         ​		'!click' : this.doThingInCapture,
+
+         ​		'~keyup' : this.doOnce,
+
+         ​		'~!mouseover' : this.doThisOnceCapture,
+
+         ​		keyup : function (event) {
+
+         ​			// 若触发事件的元素不是事件绑定的元素，则返回
+
+         ​			if(event.target !== event.currentTarget)  return
+
+         ​			// 若按下的不是enter键 或者 没有同时按下shift键，则返回
+
+         ​			if(!event.shiftKey || event.keyCode !== 13)  return 
+
+         ​			// 阻止事件冒泡
+
+         ​			event.stopPropa 
+
+         ​		}
+
+         ​	}
 
 
 
