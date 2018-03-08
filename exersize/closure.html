@@ -1,0 +1,57 @@
+<html>  
+    <head>
+        <meta charset="utf-8">
+        <title>closure</title>
+        <script src="js/vue.js"></script>
+        <style lang="">
+            body{
+                text-align: center
+            }
+        </style>
+    </head>
+    <body>
+        <h3>计数器</h3>
+        <div id="container">
+            <h3>{{ number }}</h3>
+            <btns symbol="+" @clickss="add"></btns>
+            <btns symbol="-" @clickss="sub"></btns>
+        </div>
+        <script>
+            Vue.component('btns',{
+                props: ['symbol','number'],
+                template: '<button :style="btncss" @click="change">{{symbol}}</button>',
+                data: function(){
+                    return {
+                        btncss:{
+                            background: '#5757E7',
+                            width: '50px',
+                            height: '30px',
+                            color: 'white',
+                            margin: '0 auto',
+                            outline: 'none'
+                        }
+                    }
+                },
+                methods: {
+                    change: function(){
+                        this.$emit('clickss')
+                    }
+                }
+            });
+            new Vue({
+                el: '#container',
+                data: {
+                    number: 0
+                },
+                methods: {
+                    add: function(){
+                        this.number += 1
+                    },
+                    sub: function(){
+                        this.number -= 1
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
