@@ -4,11 +4,7 @@
             <div class="header-bg">
                 <img src="../assets/chunyu.png" alt="">
             </div>
-            <div class="search-box">
-                <input type="text" :value="content" @focus="inputFocus()" class="input-box" placeholder="按症状、疾病、医院、科室、医生名">
-                <button class="search-close" :style="{opacity: isOpacity}" @click="searchClear()"></button>
-                <button class="search-btn" @click="search()"></button>
-            </div>
+            <search></search>
         </header> 
         <div>
             <block :text="blockText" :detail="blockDetail" :url="blockUrl"></block>
@@ -28,12 +24,11 @@
     import Block from '../components/block'
     import Department from '../components/department'
     import Fab from '../components/fab'
+    import Search from '../components/search'
     export default{
         name: 'FindDoctor',
         data () {
             return {
-                content: '',
-                isOpacity: 0,
                 blockText: '名医咨询',
                 blockDetail: '更准确 更放心',
                 blockUrl: require('../assets/find_doctor/famous_doctor.png'),
@@ -59,25 +54,16 @@
             }
         },
         components: {
-            Block,Fab,Department
+            Block,Fab,Department,Search
         },
         methods: {
-            inputFocus: function(){
-                this.isOpacity = 1;
-            },
-            searchClear: function(){
-                this.content = '';
-                this.isOpacity = 0;
-            },
-            search: function(){
-                // this.content......query
-            }
+            
         }
     }
 </script>
 <style>
     #container{
-        background: #F1F1F1;
+        /*background: #F1F1F1;*/
     }
     header{
         text-align: center;
@@ -88,47 +74,6 @@
     }
     .header-bg>img{
         height: 2.9rem;
-    }
-    .search-box{
-        margin: 0 1rem;
-        position: relative;
-    }
-    .input-box{
-        width: 100%;
-        text-indent: 1.5rem;
-        outline: 0;
-        border: 0;
-        padding: .9rem 0;
-        line-height: 2rem;
-        font-size: 14px;
-        color: #666;
-    }
-    :-ms-input-placeholder{
-        color: #CECECE;
-    }
-    ::-webkit-input-placeholder{
-        color: #CECECE;
-    }
-    .search-close{
-        background: url("../assets/find_doctor/close.png") no-repeat center;
-        background-size: 2rem;
-        width: 4rem;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        right: 3rem;
-        border: 0;
-    }
-    .search-btn{
-        background: url("../assets/find_doctor/search.png") no-repeat center;
-        background-size: 1.5rem;
-        width: 4.3rem;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        right: 0;
-        border: 0;
-        outline: 0;
     }
     .li-item{
         width: 25%;

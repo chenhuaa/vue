@@ -1,5 +1,5 @@
 <template>
-    <a class="ks-box">
+    <a class="ks-box" href="javascript:;">
         <span :style="img" class="ks-img"></span>
         <p>{{department}}</p>
     </a>
@@ -25,9 +25,9 @@
         width: 100%;
         height: 100%;
         margin: 0 auto;
-        background: #fff;
         font-size: 1.2rem;
         color: #666;
+        text-decoration: none;
     }
     .ks-img{
         width: 2.1rem;
