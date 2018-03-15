@@ -1,5 +1,6 @@
 <template>
-    <div id="container">
+    <div class="find-container">
+        <header-nav title="自选医生问诊"></header-nav>
         <header>
             <div class="header-bg">
                 <img src="../assets/chunyu.png" alt="">
@@ -25,6 +26,7 @@
     import Department from '../components/department'
     import Fab from '../components/fab'
     import Search from '../components/search'
+    import headerNav from '../components/headerNav'
     export default{
         name: 'FindDoctor',
         data () {
@@ -54,7 +56,7 @@
             }
         },
         components: {
-            Block,Fab,Department,Search
+            Block,Fab,Department,Search,headerNav
         },
         methods: {
             
@@ -62,8 +64,8 @@
     }
 </script>
 <style>
-    #container{
-        /*background: #F1F1F1;*/
+    .find-container{
+        width: 100%;
     }
     header{
         text-align: center;

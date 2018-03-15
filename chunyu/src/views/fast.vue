@@ -32,8 +32,9 @@
 <style scope>
     .fast-container{
         background: #F2F5F7;
-        height: 66.7rem;
-        position: relative;
+        height: 100%;
+        width: 100%;
+        position: fixed;
     }
     .fast-text{
         position: relative;

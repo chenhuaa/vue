@@ -43,6 +43,7 @@
         line-height: 2rem;
         font-size: 14px;
         color: #666;
+        background: #F1F1F1;
     }
     :-ms-input-placeholder{
         color: #CECECE;

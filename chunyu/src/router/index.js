@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import FindDoctor from '@/views/findDoctor'
 import Fast from '@/views/fast'
+import Emergency from '@/views/emergency'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/fast',
       name: 'Fast',
       component: Fast
+    },
+    {
+      path: '/emergency',
+      name: 'Emergency',
+      component: Emergency
     }
   ]
 })
