@@ -4,8 +4,9 @@
     <div class="emer-header-bg"></div>
     <p class="select-font">选择科室</p>
     <ul>
-        <li class="li-item" v-for="item in departments">
-            <department-select :department="item.department" :money="item.money" :imgSrc="item.src"></department-select>
+        <!--此处通过比较当前点击目标的key与info比较，相同则添加class:selected-->
+        <li class="li-item" v-for="(item,key) in departments" @click="sss(key)">
+            <department-select :class="{selected: key==info}" :department="item.department" :money="item.money" :imgSrc="item.src"></department-select>
         </li>
     </ul>
   </div>
@@ -17,6 +18,8 @@
         name: 'Emergency',
         data () {
             return {
+                name:"",
+                info: '',
                 departments: [
                     {"department": "小儿科", "money": "6", "src": require("../assets/departments/t-child.png")},
                     {"department": "皮肤科", "money": "5", "src": require("../assets/departments/t-skin.png")},
@@ -28,6 +31,13 @@
         },
         components: {
             HeaderNav,DepartmentSelect
+        },
+        methods: {
+            sss: function(key){
+                this.info = key;
+                console.log(this.info);
+                console.log(key);
+            }
         }
     }
 </script>

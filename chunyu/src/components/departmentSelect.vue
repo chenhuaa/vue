@@ -1,6 +1,6 @@
 <template>
     <div class="de-select">
-        <div class="select-box" :class="{selected:selectBool}" @click="selectKs()">
+        <div class="select-box" :class="{selected:selectBool}">
             <p>{{department}}</p>
             <img class="img-icon" :src="imgSrc" alt="">
             <p>{{money}}元/次</p>
@@ -28,13 +28,14 @@
         width: 100%;
         height: 100%;
         padding: .9rem;
+        color: #999;
         box-sizing: border-box;
+        border-radius: .5rem;
+        border: .1rem solid transparent; 
     }
     .select-box{
         width: 100%;
         height: 100%;
-        border-radius: .5rem;
-        color: #999;
         text-align: center;
         font-size: 1.4rem;
         box-sizing: border-box;
@@ -49,7 +50,7 @@
         color: #FF5218;
         border: .1rem solid #FF5218;
     }
-    .selected>.img-icon{
+    .selected .img-icon{
         background-color: #FF5218; 
     }
 </style>
